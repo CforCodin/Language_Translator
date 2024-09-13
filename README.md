@@ -40,3 +40,6 @@ Run the following command in your terminal:
 
 ```bash
 python your_tkinter_app.py
+
+
+![image](https://github.com/user-attachments/assets/d970f4f7-9842-4a7e-8b6b-db57768f4073)
