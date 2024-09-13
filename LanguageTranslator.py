@@ -1,5 +1,5 @@
 from tkinter import *
-from googletrans import Translator
+from googletrans import Translator, LANGUAGES
 
 # Initialize the Tkinter root window
 root = Tk()
@@ -9,7 +9,7 @@ root.title("Khatri's Language Translator")
 root.configure(bg="lightgreen")
 
 # Header Label
-head = Label(root, text="TRANSLATOR", font=('Times', 24, 'bold'), bg="lightgreen", fg="black", pady=30)
+head = Label(root, text="TRANSLATOR", font=('Times', 24, 'bold'), bg="lightgreen", fg="black", pady=20)
 head.grid(row=0, column=0, columnspan=2)
 
 # Input Label
@@ -21,41 +21,37 @@ mn = StringVar()
 textEntry = Entry(root, textvariable=mn, font=('Arial', 12), width=40)
 textEntry.grid(row=2, column=0, padx=20)
 
-# Language Options
-l1 = Label(root, text="Enter 1 for Hindi", bg="lightgreen", fg="black", anchor="w")
-l1.grid(row=3, column=0, sticky=W, padx=20)
-l2 = Label(root, text="Enter 2 for Punjabi", bg="lightgreen", fg="black", anchor="w")
-l2.grid(row=4, column=0, sticky=W, padx=20)
-l3 = Label(root, text="Enter 3 for Bengali", bg="lightgreen", fg="black", anchor="w")
-l3.grid(row=5, column=0, sticky=W, padx=20)
+# Language Selection Dropdown Menu
+language_options = list(LANGUAGES.values())  # List of language names
+language_codes = list(LANGUAGES.keys())  # List of language codes
+selected_language = StringVar(root)
+selected_language.set("Select Language")  # Default value
 
-# Choice Entry
-ch = IntVar()
-chEntry = Entry(root, textvariable=ch, font=('Arial', 12), width=5)
-chEntry.grid(row=6, column=0, padx=20, pady=10, sticky=W)
+language_menu = OptionMenu(root, selected_language, *language_options)
+language_menu.config(font=('Arial', 12), bg="white")
+language_menu.grid(row=3, column=0, padx=20, pady=10)
 
 # Output Label for displaying results
 result_label = Label(root, text="", bg="lightgreen", fg="black", font=('Arial', 12, 'bold'), wraplength=500, justify=LEFT)
-result_label.grid(row=8, column=0, padx=20, pady=10)
+result_label.grid(row=5, column=0, padx=20, pady=10)
 
 # Output Function
 def output():
     try:
-        # Get input text and language choice
+        # Get input text and selected language
         text_to_translate = mn.get()
-        choice = ch.get()
+        language = selected_language.get()
 
-        # Determine the destination language based on the choice
-        if choice == 1:
-            out = translator.translate(text_to_translate, dest='hi')
-        elif choice == 2:
-            out = translator.translate(text_to_translate, dest='pa')
-        elif choice == 3:
-            out = translator.translate(text_to_translate, dest='bn')
-        else:
-            out = "Invalid choice"
-            result_label.config(text=out)
+        # Check if a language is selected
+        if language == "Select Language":
+            result_label.config(text="Please select a language.")
             return
+
+        # Get the corresponding language code
+        language_code = language_codes[language_options.index(language)]
+
+        # Perform translation
+        out = translator.translate(text_to_translate, dest=language_code)
 
         # Update the output label
         result_label.config(text=out.text)
@@ -65,6 +61,6 @@ def output():
 
 # Result Button
 b = Button(root, text="Translate", command=output, bg="white", fg="black", font=('Arial', 12, 'bold'), padx=10, pady=5)
-b.grid(row=7, column=0, pady=20)
+b.grid(row=4, column=0, pady=20)
 
 root.mainloop()
